@@ -13,7 +13,7 @@ steps:
     args:
       - '-c'
       - |
-        sed -i "s|\$PROJECT_ID|mythic-beanbag-463309-e9|g" k8s/deployment.yaml
+        sed -i 's|$PROJECT_ID|mythic-beanbag-463309-e9|g' k8s/deployment.yaml
         sed -i "s|\$SHORT_SHA|$SHORT_SHA|g" k8s/deployment.yaml
 
   # Step 4: Deploy to GKE using kubectl
@@ -25,5 +25,6 @@ steps:
 
 images:
   - 'gcr.io/mythic-beanbag-463309-e9/myapp:$SHORT_SHA'
+
 options:
   logging: CLOUD_LOGGING_ONLY
