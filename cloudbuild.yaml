@@ -23,9 +23,8 @@ steps:
     args:
       - '-c'
       - |
-        sed -i "s|\$PROJECT_ID|mythic-beanbag-463309-e9|g" k8s/deployment.yaml
-        sed -i "s|\$SHORT_SHA|$SHORT_SHA|g" k8s/deployment.yaml
-
+        sed -i "s|\$$PROJECT_ID|mythic-beanbag-463309-e9|g" k8s/deployment.yaml
+        sed -i "s|\$$SHORT_SHA|$SHORT_SHA|g" k8s/deployment.yaml
   # Step 5: Authenticate to GKE (get credentials)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
