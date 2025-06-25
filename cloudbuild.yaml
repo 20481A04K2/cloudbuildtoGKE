@@ -25,3 +25,5 @@ steps:
 
 images:
   - 'gcr.io/mythic-beanbag-463309-e9/myapp:$SHORT_SHA'
+options:
+  logging: CLOUD_LOGGING_ONLY
