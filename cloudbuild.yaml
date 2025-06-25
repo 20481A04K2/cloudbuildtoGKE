@@ -7,7 +7,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/mythic-beanbag-463309-e9/myapp:$SHORT_SHA']
 
-  # Step 3: Replace placeholders in deployment YAML
+  # Step 3: Replace placeholders
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: bash
     args:
@@ -16,12 +16,21 @@ steps:
         sed -i 's|$PROJECT_ID|mythic-beanbag-463309-e9|g' k8s/deployment.yaml
         sed -i "s|\$SHORT_SHA|$SHORT_SHA|g" k8s/deployment.yaml
 
-  # Step 4: Deploy to GKE using kubectl
-  - name: 'gcr.io/cloud-builders/kubectl'
+  # Step 4: Get GKE credentials (authenticate kubectl)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      [
+        'container', 'clusters', 'get-credentials',
+        'vamsi-cluster1',
+        '--zone', 'asia-east1-a',
+        '--project', 'mythic-beanbag-463309-e9'
+      ]
+
+  # Step 5: Apply Kubernetes manifests
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: kubectl
     args: ['apply', '-f', 'k8s/']
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=vamsi-cluster1'
 
 images:
   - 'gcr.io/mythic-beanbag-463309-e9/myapp:$SHORT_SHA'
