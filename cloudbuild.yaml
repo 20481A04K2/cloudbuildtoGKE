@@ -21,7 +21,7 @@ steps:
     args: ['apply', '-f', 'k8s/']
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=vamsi-cluster'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=vamsi-cluster1'
 
 images:
   - 'gcr.io/mythic-beanbag-463309-e9/myapp:$SHORT_SHA'
