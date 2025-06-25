@@ -7,7 +7,17 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/mythic-beanbag-463309-e9/myapp:$SHORT_SHA']
 
-  # Step 3: Replace placeholders in deployment.yaml
+  # Step 3.5: Tag pushed image as 'latest'
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      [
+        'container', 'images', 'add-tag',
+        'gcr.io/mythic-beanbag-463309-e9/myapp:$SHORT_SHA',
+        'gcr.io/mythic-beanbag-463309-e9/myapp:latest',
+        '--quiet'
+      ]
+
+  # Step 4: Replace placeholders in deployment.yaml
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: bash
     args:
@@ -16,7 +26,7 @@ steps:
         sed -i "s|\\\$PROJECT_ID|mythic-beanbag-463309-e9|g" k8s/deployment.yaml
         sed -i "s|\\\$SHORT_SHA|$SHORT_SHA|g" k8s/deployment.yaml
 
-  # Step 4: Authenticate to GKE (get credentials)
+  # Step 5: Authenticate to GKE (get credentials)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -27,7 +37,7 @@ steps:
         '--project', 'mythic-beanbag-463309-e9'
       ]
 
-  # Step 5: Deploy to GKE using kubectl
+  # Step 6: Deploy to GKE using kubectl
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: bash
     args:
@@ -37,6 +47,7 @@ steps:
 
 images:
   - 'gcr.io/mythic-beanbag-463309-e9/myapp:$SHORT_SHA'
+  - 'gcr.io/mythic-beanbag-463309-e9/myapp:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
